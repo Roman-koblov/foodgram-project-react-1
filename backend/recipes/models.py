@@ -7,6 +7,9 @@ User = get_user_model()
 
 
 class Tag(models.Model):
+    """
+    Модель тегов.
+    """
     name = models.CharField(
         max_length=200,
         verbose_name='Название тега',
