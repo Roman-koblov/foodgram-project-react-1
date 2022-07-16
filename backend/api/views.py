@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from recipes.models import Ingredient, Recipe, Tag
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 from .pagination import CustomPagination
 from .filters import IngredientSearchFilter
 
@@ -10,7 +10,7 @@ from .serializers import (IngredientSerializer, RecipeSerializer,
 User = get_user_model()
 
 
-class UserViewSet(ReadOnlyModelViewSet):
+class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = CustomPagination
