@@ -5,7 +5,6 @@ from django.db import models
 
 class UserRole:
     USER = 'user'
-    MODERATOR = 'moderator'
     ADMIN = 'admin'
     choices = [
         (USER, 'USER'),
@@ -31,6 +30,8 @@ class User(AbstractUser):
         default=UserRole.USER,
         verbose_name='Пользовательская роль'
     )
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     class Meta:
         verbose_name = 'user'
