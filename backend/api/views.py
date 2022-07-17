@@ -1,18 +1,15 @@
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from recipes.models import Ingredient, Recipe, Tag
 from rest_framework.viewsets import ModelViewSet
 from .pagination import CustomPagination
 from .filters import IngredientSearchFilter
+from djoser.views import UserViewSet
 
 from .serializers import (IngredientSerializer, RecipeSerializer,
-                          TagSerializer, UserSerializer)
-
-User = get_user_model()
+                          TagSerializer)
 
 
-class UserViewSet(ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UsersViewSet(UserViewSet):
     pagination_class = CustomPagination
 
 
