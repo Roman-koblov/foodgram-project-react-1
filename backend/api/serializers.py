@@ -39,6 +39,6 @@ class IngredientSerializer(ModelSerializer):
 
 class TagSerializer(ModelSerializer):
     class Meta:
-        model: Tag
+        model = Tag
         fields = '__all__'
         ref_name = 'ReadOnlyUsers'
