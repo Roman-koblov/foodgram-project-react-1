@@ -119,6 +119,7 @@ class IngredientRecipe(models.Model):
     )
 
     class Meta:
+        default_related_name = 'ingridients_recipe'
         constraints = (
             models.UniqueConstraint(
                 fields=('recipe', 'ingredient',),
