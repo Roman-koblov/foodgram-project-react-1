@@ -23,6 +23,7 @@ class UsersViewSet(UserViewSet):
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    pagination_class = CustomPagination
 
 
 class IngredientViewSet(ModelViewSet):
