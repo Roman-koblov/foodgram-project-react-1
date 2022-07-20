@@ -4,7 +4,8 @@ from rest_framework.serializers import (ModelSerializer,
                                         SerializerMethodField,
                                         SlugRelatedField)
 
-from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag
+from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
+                            Recipe, Tag)
 from users.models import Follow, User
 
 
@@ -22,8 +23,8 @@ class UsersSerializer(UserSerializer):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
-        return Follow.objects.filter(user=self.context['request'].user,
-                                     author=obj).exists()
+        return Follow.objects.filter(
+            user=request.user, author=obj).exists()
 
 
 class TagSerializer(ModelSerializer):
@@ -86,8 +87,31 @@ class RecipeSerializer(ModelSerializer):
     author = UsersSerializer(
         read_only=True
     )
+    is_in_shopping_cart = SerializerMethodField(
+        read_only=True
+    )
+    is_favorited = SerializerMethodField(
+        read_only=True
+    )
 
     class Meta:
         model = Recipe
-        fields = ('id', 'tags', 'author', 'ingredients',
-                  'name', 'image', 'text', 'cooking_time')
+        fields = (
+            'id', 'tags', 'author', 'ingredients',
+            'is_favorited', 'is_in_shopping_cart',
+            'name', 'image', 'text', 'cooking_time'
+        )
+
+    def get_is_favorited(self, obj):
+        request = self.context.get('request')
+        if request.user.is_anonymous:
+            return False
+        return Favorites.objects.filter(
+            user=request.user, recipe__id=obj.id).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        request = self.context.get('request')
+        if request.user.is_anonymous:
+            return False
+        return Cart.objects.filter(
+            user=request.user, recipe__id=obj.id).exists()
