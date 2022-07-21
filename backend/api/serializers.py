@@ -2,11 +2,14 @@ from djoser.serializers import UserSerializer
 from rest_framework.serializers import (ModelSerializer,
                                         PrimaryKeyRelatedField,
                                         SerializerMethodField,
-                                        SlugRelatedField)
+                                        SlugRelatedField, IntegerField,
+                                        ValidationError)
 
 from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
                             Recipe, Tag)
 from users.models import Follow, User
+from django.db.transaction import atomic
+from drf_base64.fields import Base64ImageField
 
 
 class UsersSerializer(UserSerializer):
@@ -115,3 +118,96 @@ class RecipeSerializer(ModelSerializer):
             return False
         return Cart.objects.filter(
             user=request.user, recipe__id=obj.id).exists()
+
+
+class CreateIngredientRecipeSerializer(ModelSerializer):
+    id = PrimaryKeyRelatedField(
+        source='ingredient',
+        queryset=Ingredient.objects.all()
+    )
+
+    class Meta:
+        model = IngredientRecipe
+        fields = (
+            'id',
+            'amount',
+        )
+
+    def validate_amount(self, data):
+        if int(data) < 1:
+            raise ValidationError({
+                'ingredients': (
+                    'Количество должно быть больше 1'
+                ),
+                'msg': data
+            })
+        return data
+
+    def create(self, validated_data):
+        return IngredientRecipe.objects.create(
+            ingredient=validated_data.get('id'),
+            amount=validated_data.get('amount')
+        )
+
+
+class CreateRecipeSerializer(ModelSerializer):
+    image = Base64ImageField(
+        use_url=True,
+        max_length=None
+    )
+    author = UserSerializer(
+        read_only=True
+    )
+    ingredients = CreateIngredientRecipeSerializer(
+        many=True
+    )
+    tags = PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True,
+    )
+    cooking_time = IntegerField()
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id', 'image', 'tags', 'author', 'ingredients',
+            'name', 'text', 'cooking_time',
+        )
+
+    def create_ingredients(self, recipe, ingredients):
+        IngredientRecipe.objects.bulk_create([
+            IngredientRecipe(
+                recipe=recipe,
+                amount=ingredient['amount'],
+                ingredient=ingredient['ingredient'],
+            ) for ingredient in ingredients
+        ])
+
+    @atomic
+    def create(self, validated_data):
+        request = self.context.get('request')
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(
+            author=request.user,
+            **validated_data
+        )
+        self.create_ingredients(recipe, ingredients)
+        recipe.tags.set(tags)
+        return recipe
+
+    @atomic
+    def update(self, instance, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        recipe = instance
+        IngredientRecipe.objects.filter(recipe=recipe).delete()
+        self.create_ingredients(recipe, ingredients)
+        return super().update(recipe, validated_data)
+
+    def to_representation(self, instance):
+        return RecipeSerializer(
+            instance,
+            context={
+                'request': self.context.get('request'),
+            }
+        ).data
