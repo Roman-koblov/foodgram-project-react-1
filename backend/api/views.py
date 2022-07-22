@@ -1,4 +1,3 @@
-# from django.contrib.auth import get_user_model
 from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -11,13 +10,14 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from weasyprint import HTML
 
-from recipes.models import Cart, Ingredient, IngredientRecipe, Recipe, Tag
+from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
+                            Recipe, Tag)
 
 from .filters import IngredientSearchFilter
 from .pagination import CustomPagination
 from .serializers import (CartSerializer, CreateRecipeSerializer,
-                          IngredientSerializer, RecipeSerializer,
-                          TagSerializer)
+                          FavoriteSerializer, IngredientSerializer,
+                          RecipeSerializer, TagSerializer)
 
 
 class UsersViewSet(UserViewSet):
@@ -55,7 +55,7 @@ class RecipeViewSet(ModelViewSet):
         model_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=('post'))
+    @action(detail=True, methods=('post',))
     def shopping_cart(self, request, pk):
         return self.post_method_for_actions(
             request, pk, serializers=CartSerializer
@@ -84,6 +84,16 @@ class RecipeViewSet(ModelViewSet):
         response['Content-Disposition'] = 'inline; filename=shopping_list.pdf'
         response['Content-Transfer-Encoding'] = 'binary'
         return response
+
+    @action(detail=True, methods=('post',))
+    def favorite(self, request, pk):
+        return self.post_method_for_actions(
+            request=request, pk=pk, serializers=FavoriteSerializer)
+
+    @favorite.mapping.delete
+    def delete_favorite(self, request, pk):
+        return self.delete_method_for_actions(
+            request=request, pk=pk, model=Favorites)
 
 
 class IngredientViewSet(ModelViewSet):
