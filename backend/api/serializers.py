@@ -1,15 +1,14 @@
+from django.db.transaction import atomic
 from djoser.serializers import UserSerializer
-from rest_framework.serializers import (ModelSerializer,
+from drf_base64.fields import Base64ImageField
+from rest_framework.serializers import (IntegerField, ModelSerializer,
                                         PrimaryKeyRelatedField,
                                         SerializerMethodField,
-                                        SlugRelatedField, IntegerField,
-                                        ValidationError)
+                                        SlugRelatedField, ValidationError)
 
 from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
                             Recipe, Tag)
 from users.models import Follow, User
-from django.db.transaction import atomic
-from drf_base64.fields import Base64ImageField
 
 
 class UsersSerializer(UserSerializer):
@@ -211,3 +210,34 @@ class CreateRecipeSerializer(ModelSerializer):
                 'request': self.context.get('request'),
             }
         ).data
+
+
+class RecipeShortInfo(ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
+
+
+class CartSerializer(ModelSerializer):
+    class Meta:
+        fields = [
+            'recipe',
+            'user'
+        ]
+        model = Cart
+
+    def validate(self, data):
+        request = self.context.get('request')
+        recipe = data['recipe']
+        if Cart.objects.filter(
+            user=request.user, recipe=recipe
+        ).exists():
+            raise ValidationError({
+                'status': 'Данный рецепт уже есть в корзине.'
+            })
+        return data
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        context = {'request': request}
+        return RecipeShortInfo(instance.recipe, context=context).data
