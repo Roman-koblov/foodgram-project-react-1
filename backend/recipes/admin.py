@@ -83,5 +83,3 @@ admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 # admin.site.register(IngredientRecipe, IngredientRecipeAdmin)
-
-# TODO: На странице рецепта вывести общее число добавлений этого рецепта в избранное.
