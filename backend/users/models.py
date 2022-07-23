@@ -39,6 +39,9 @@ class User(AbstractUser):
         verbose_name = 'user'
         verbose_name_plural = 'Пользователи'
 
+    def __str__(self):
+        return self.username
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
@@ -67,3 +70,6 @@ class Follow(models.Model):
                 name='self_following',
             ),
         )
+
+    def __str__(self):
+        return f'{self.user} подписан на {self.author}.'
