@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User
+from .models import User, Follow
 
 
 class BaseAdminSettings(admin.ModelAdmin):
@@ -23,4 +23,16 @@ class UsersAdmin(BaseAdminSettings):
     search_fields = ('role', 'username')
 
 
+class FollowAdmin(admin.ModelAdmin):
+    """Кастомизация админ панели (управление подписками)."""
+    list_display = (
+        'id',
+        'user',
+        'author'
+    )
+    list_display_links = ('id', 'user')
+    search_fields = ('user',)
+
+
 admin.site.register(User, UsersAdmin)
+admin.site.register(Follow, FollowAdmin)
