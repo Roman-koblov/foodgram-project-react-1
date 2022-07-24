@@ -12,17 +12,17 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from weasyprint import HTML
 
-from users.models import User, Follow
 from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
                             Recipe, Tag)
+from users.models import Follow, User
 
 from .filters import IngredientSearchFilter, RecipeFilterSet
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (CartSerializer, CreateRecipeSerializer,
-                          FavoriteSerializer, IngredientSerializer,
-                          RecipeSerializer, TagSerializer,
-                          FollowListSerializer, FollowSerializer)
+                          FavoriteSerializer, FollowListSerializer,
+                          FollowSerializer, IngredientSerializer,
+                          RecipeSerializer, TagSerializer)
 
 
 class UsersViewSet(UserViewSet):
