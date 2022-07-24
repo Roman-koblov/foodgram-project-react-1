@@ -6,7 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
+from rest_framework.permissions import (SAFE_METHODS, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from weasyprint import HTML
@@ -17,6 +18,7 @@ from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
 
 from .filters import IngredientSearchFilter, RecipeFilterSet
 from .pagination import CustomPagination
+from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (CartSerializer, CreateRecipeSerializer,
                           FavoriteSerializer, IngredientSerializer,
                           RecipeSerializer, TagSerializer,
@@ -71,6 +73,7 @@ class RecipeViewSet(ModelViewSet):
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilterSet
+    permission_classes = (IsAuthorOrAdminOrReadOnly, IsAuthenticatedOrReadOnly)
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -104,7 +107,9 @@ class RecipeViewSet(ModelViewSet):
         return self.delete_method_for_actions(
             request=request, pk=pk, model=Cart)
 
-    @action(detail=False, methods=('get',))
+    @action(
+        detail=False, methods=('get',), permission_classes=(IsAuthenticated,)
+    )
     def download_shopping_cart(self, request):
         shopping_list = IngredientRecipe.objects.filter(
             recipe__cart__user=request.user

@@ -149,7 +149,7 @@ class CreateRecipeSerializer(ModelSerializer):
         use_url=True,
         max_length=None
     )
-    author = UserSerializer(
+    author = UsersSerializer(
         read_only=True
     )
     ingredients = CreateIngredientRecipeSerializer(
@@ -303,17 +303,18 @@ class FollowSerializer(ModelSerializer):
         fields = ('user', 'author')
 
     def validate(self, data):
-        print(data)
         get_object_or_404(User, username=data['author'])
         if self.context['request'].user == data['author']:
-            raise ValidationError('Ты не пожешь подписаться на себя.')
+            raise ValidationError(
+                {'errors': 'Ты не пожешь подписаться на себя.'}
+            )
         if Follow.objects.filter(
                 user=self.context['request'].user,
                 author=data['author']
         ):
-            raise ValidationError(({
+            raise ValidationError({
                 'errors': 'Уже подписан.'
-            }))
+            })
         return data
 
     def to_representation(self, instance):
