@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Ingredient, IngredientRecipe, Recipe, Tag
+from .models import (Ingredient, IngredientRecipe, Recipe,
+                     Tag, Favorites, Cart)
 
 
 class BaseAdminSettings(admin.ModelAdmin):
@@ -79,7 +80,27 @@ class IngredientRecipeAdmin(admin.ModelAdmin):
     list_filter = ('recipe', 'ingredient')
 
 
+class FavoritesAdmin(admin.ModelAdmin):
+    """
+    Кастомизация админ панели (управление избранных рецептов).
+    """
+    list_display = ('user', 'recipe')
+    list_filter = ('user', 'recipe')
+    search_fields = ('user', 'recipe')
+
+
+class CartAdmin(admin.ModelAdmin):
+    """
+    Кастомизация админ панели (управление избранных рецептов).
+    """
+    list_display = ('recipe', 'user')
+    list_filter = ('recipe', 'user')
+    search_fields = ('user',)
+
+
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
-# admin.site.register(IngredientRecipe, IngredientRecipeAdmin)
+admin.site.register(IngredientRecipe, IngredientRecipeAdmin)
+admin.site.register(Favorites, FavoritesAdmin)
+admin.site.register(Cart, CartAdmin)
