@@ -2,6 +2,7 @@ from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
@@ -14,7 +15,7 @@ from users.models import User, Follow
 from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
                             Recipe, Tag)
 
-from .filters import IngredientSearchFilter
+from .filters import IngredientSearchFilter, RecipeFilterSet
 from .pagination import CustomPagination
 from .serializers import (CartSerializer, CreateRecipeSerializer,
                           FavoriteSerializer, IngredientSerializer,
@@ -68,6 +69,8 @@ class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = CustomPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilterSet
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
