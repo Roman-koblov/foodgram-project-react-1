@@ -24,8 +24,8 @@ class User(AbstractUser):
         verbose_name='Username'
     )
     email = models.EmailField(max_length=254, unique=True)
-    first_name = models.TextField(max_length=150, blank=True)
-    last_name = models.TextField(max_length=150, blank=True)
+    first_name = models.TextField(max_length=150)
+    last_name = models.TextField(max_length=150)
     role = models.TextField(
         choices=UserRole.choices,
         default=UserRole.USER,
