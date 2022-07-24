@@ -78,10 +78,7 @@ class IngredientRecipeSerializer(ModelSerializer):
 
 
 class RecipeSerializer(ModelSerializer):
-    tags = TagSerializer(
-        many=True,
-        read_only=True
-    )
+    tags = TagSerializer(many=True, read_only=True)
     ingredients = IngredientRecipeSerializer(
         many=True,
         read_only=True,
@@ -145,20 +142,10 @@ class CreateIngredientRecipeSerializer(ModelSerializer):
 
 
 class CreateRecipeSerializer(ModelSerializer):
-    image = Base64ImageField(
-        use_url=True,
-        max_length=None
-    )
-    author = UsersSerializer(
-        read_only=True
-    )
-    ingredients = CreateIngredientRecipeSerializer(
-        many=True
-    )
-    tags = PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(),
-        many=True,
-    )
+    image = Base64ImageField(use_url=True, max_length=None)
+    author = UsersSerializer(read_only=True)
+    ingredients = CreateIngredientRecipeSerializer(many=True)
+    tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     cooking_time = IntegerField()
 
     class Meta:
@@ -215,10 +202,7 @@ class RecipeShortInfo(ModelSerializer):
 
 class CartSerializer(ModelSerializer):
     class Meta:
-        fields = [
-            'recipe',
-            'user'
-        ]
+        fields = ['recipe', 'user']
         model = Cart
 
     def validate(self, data):
@@ -305,9 +289,9 @@ class FollowSerializer(ModelSerializer):
     def validate(self, data):
         get_object_or_404(User, username=data['author'])
         if self.context['request'].user == data['author']:
-            raise ValidationError(
-                {'errors': 'Ты не пожешь подписаться на себя.'}
-            )
+            raise ValidationError({
+                'errors': 'Ты не пожешь подписаться на себя.'
+            })
         if Follow.objects.filter(
                 user=self.context['request'].user,
                 author=data['author']

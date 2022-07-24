@@ -96,7 +96,7 @@ class RecipeViewSet(ModelViewSet):
         model_instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=('post',))
+    @action(detail=True, methods=['post'])
     def shopping_cart(self, request, pk):
         return self.post_method_for_actions(
             request, pk, serializers=CartSerializer
@@ -108,7 +108,7 @@ class RecipeViewSet(ModelViewSet):
             request=request, pk=pk, model=Cart)
 
     @action(
-        detail=False, methods=('get',), permission_classes=(IsAuthenticated,)
+        detail=False, methods=['get'], permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
         shopping_list = IngredientRecipe.objects.filter(
@@ -128,7 +128,7 @@ class RecipeViewSet(ModelViewSet):
         response['Content-Transfer-Encoding'] = 'binary'
         return response
 
-    @action(detail=True, methods=('post',))
+    @action(detail=True, methods=['post'])
     def favorite(self, request, pk):
         return self.post_method_for_actions(
             request=request, pk=pk, serializers=FavoriteSerializer)
