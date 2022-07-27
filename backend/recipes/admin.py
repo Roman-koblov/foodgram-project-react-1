@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (Ingredient, IngredientRecipe, Recipe,
-                     Tag, Favorites, Cart)
+                     Tag, Favorite, Cart)
 
 
 class BaseAdminSettings(admin.ModelAdmin):
@@ -80,7 +80,7 @@ class IngredientRecipeAdmin(admin.ModelAdmin):
     list_filter = ('recipe', 'ingredient')
 
 
-class FavoritesAdmin(admin.ModelAdmin):
+class FavoriteAdmin(admin.ModelAdmin):
     """
     Кастомизация админ панели (управление избранных рецептов).
     """
@@ -102,5 +102,5 @@ admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(IngredientRecipe, IngredientRecipeAdmin)
-admin.site.register(Favorites, FavoritesAdmin)
+admin.site.register(Favorite, FavoriteAdmin)
 admin.site.register(Cart, CartAdmin)

@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from weasyprint import HTML
 
-from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
+from recipes.models import (Cart, Favorite, Ingredient, IngredientRecipe,
                             Recipe, Tag)
 from users.models import Follow, User
 from .filters import IngredientSearchFilter, RecipeFilterSet
@@ -135,7 +135,7 @@ class RecipeViewSet(ModelViewSet):
     @favorite.mapping.delete
     def delete_favorite(self, request, pk):
         return self.delete_method_for_actions(
-            request=request, pk=pk, model=Favorites)
+            request=request, pk=pk, model=Favorite)
 
 
 class IngredientViewSet(ModelViewSet):

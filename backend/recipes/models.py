@@ -76,7 +76,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientRecipe',
-        related_name='recipes_ingredients',
+        related_name='recipes',
         verbose_name='Ингредиенты в рецепте'
     )
     tags = models.ManyToManyField(
@@ -140,7 +140,7 @@ class IngredientRecipe(models.Model):
         return f'{self.recipe}: {self.ingredient} – {self.amount}'
 
 
-class Favorites(models.Model):
+class Favorite(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

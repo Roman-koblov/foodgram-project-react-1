@@ -7,7 +7,7 @@ from rest_framework.serializers import (IntegerField, ModelSerializer,
                                         SerializerMethodField,
                                         SlugRelatedField, ValidationError)
 
-from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
+from recipes.models import (Cart, Favorite, Ingredient, IngredientRecipe,
                             Recipe, Tag)
 from users.models import Follow, User
 
@@ -100,7 +100,7 @@ class RecipeSerializer(ModelSerializer):
         request = self.context.get('request')
         if request.user.is_anonymous:
             return False
-        return Favorites.objects.filter(
+        return Favorite.objects.filter(
             user=request.user, recipe__id=obj.id).exists()
 
     def get_is_in_shopping_cart(self, obj):
@@ -224,7 +224,7 @@ class CartSerializer(ModelSerializer):
 
 class FavoriteSerializer(ModelSerializer):
     class Meta:
-        model = Favorites
+        model = Favorite
         fields = ('user', 'recipe')
 
     def validate(self, data):
@@ -232,7 +232,7 @@ class FavoriteSerializer(ModelSerializer):
         if not request or request.user.is_anonymous:
             return False
         recipe = data['recipe']
-        if Favorites.objects.filter(user=request.user, recipe=recipe).exists():
+        if Favorite.objects.filter(user=request.user, recipe=recipe).exists():
             raise ValidationError({
                 'errors': 'Уже есть в избранном.'
             })
