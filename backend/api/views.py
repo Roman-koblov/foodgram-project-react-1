@@ -15,7 +15,6 @@ from weasyprint import HTML
 from recipes.models import (Cart, Favorites, Ingredient, IngredientRecipe,
                             Recipe, Tag)
 from users.models import Follow, User
-
 from .filters import IngredientSearchFilter, RecipeFilterSet
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
