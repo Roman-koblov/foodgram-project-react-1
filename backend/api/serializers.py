@@ -177,6 +177,7 @@ class CreateRecipeSerializer(ModelSerializer):
         recipe.tags.set(tags)
         return recipe
 
+    # да, теги сохраняются
     @atomic
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
