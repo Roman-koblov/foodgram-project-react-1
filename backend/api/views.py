@@ -12,9 +12,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from weasyprint import HTML
 
-from recipes.models import (Cart, Favorite, Ingredient, IngredientRecipe,
-                            Recipe, Tag)
-from users.models import Follow, User
 from .filters import IngredientSearchFilter, RecipeFilterSet
 from .pagination import CustomPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
@@ -22,6 +19,9 @@ from .serializers import (CartSerializer, CreateRecipeSerializer,
                           FavoriteSerializer, FollowListSerializer,
                           FollowSerializer, IngredientSerializer,
                           RecipeSerializer, TagSerializer)
+from recipes.models import (Cart, Favorite, Ingredient, IngredientRecipe,
+                            Recipe, Tag)
+from users.models import Follow, User
 
 
 class UsersViewSet(UserViewSet):
@@ -113,11 +113,11 @@ class RecipeViewSet(ModelViewSet):
         shopping_list = IngredientRecipe.objects.filter(
             recipe__cart__user=request.user
         ).values(
-                name=F('ingredient__name'),
-                measurement_unit=F('ingredient__measurement_unit')
-            ).annotate(amount=Sum('amount')).values_list(
-                'ingredient__name', 'amount', 'ingredient__measurement_unit'
-            )
+            name=F('ingredient__name'),
+            measurement_unit=F('ingredient__measurement_unit')
+        ).annotate(amount=Sum('amount')).values_list(
+            'ingredient__name', 'amount', 'ingredient__measurement_unit'
+        )
         html_template = render_to_string('recipes/pdf_template.html',
                                          {'ingredients': shopping_list})
         html = HTML(string=html_template)
