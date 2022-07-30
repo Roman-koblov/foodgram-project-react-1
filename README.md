@@ -1,5 +1,6 @@
 ### praktikum_new_diplom
 84.252.137.237
+
 ![workflow](https://github.com/avagners/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 ## Стек технологий
