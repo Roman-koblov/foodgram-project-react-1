@@ -9,9 +9,7 @@ services:
       - ../backend/foodgram/.env
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: avagners/foodgram-backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -22,9 +20,7 @@ services:
       - ../backend/foodgram/.env
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: avagners/foodgram-frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
