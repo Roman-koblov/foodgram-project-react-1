@@ -67,3 +67,6 @@ password: Admin12345
     -  http://localhost/api/ - API проекта
     -  http://localhost/api/docs/redoc.html - документация к API
 
+---
+## Автор
+**[Вагнер Александр](https://github.com/avagners)** - создание api, деплой на сервер.
