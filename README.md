@@ -61,7 +61,13 @@ password: Admin12345
     sudo docker compose exec backend python manage.py collectstatic --no-input 
     ```
 
-5. Готово! Ниже представлены доступные адреса проекта:
+5. Загрузите в бд ингредиенты командой ниже.
+
+    ```
+    sudo docker compose exec backend python manage.py load_ingredients
+    ```
+
+6. Готово! Ниже представлены доступные адреса проекта:
     -  http://localhost/ - главная страница сайта;
     -  http://localhost/admin/ - админ панель;
     -  http://localhost/api/ - API проекта
