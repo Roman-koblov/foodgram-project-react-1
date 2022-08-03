@@ -1,9 +1,4 @@
-### praktikum_new_diplom
-```
-ip: 84.252.137.237
-login: admin@admin.ru
-password: Admin12345
-```
+### praktikum_diplom
 
 ![workflow](https://github.com/avagners/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
